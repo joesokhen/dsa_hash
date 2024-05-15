@@ -59,21 +59,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _inputController = TextEditingController();
-  String? hashedValue;
+  String? outputHashedValue;
 
-  Future<void> _calculateHash() async {
+  void _calculateHash() {
     final input = _inputController.text.trim();
     if (input.isNotEmpty) {
-      final hashAlgorithm = Sha256();
-      final hash = await hashAlgorithm.hash(utf8.encode(input));
+      int getHash = _calculateASCIIHash(input);
       setState(() {
-        hashedValue = hash.bytes.toString();
+        outputHashedValue = getHash.toString();
       });
     } else {
       setState(() {
-        hashedValue = null;
+        outputHashedValue = null;
       });
     }
+  }
+
+  int _calculateASCIIHash(String input) {
+    int hashedValue = 0;
+    for (int i = 0; i < input.length; i++) {
+      // input[i] to ascii conversion.
+      int asciiValue = input.codeUnitAt(i);
+
+      // Hashing Function = 3k + 16, where k = asciiValue.
+      hashedValue += (3 * asciiValue) + 16;
+    }
+    return hashedValue;
   }
 
   @override
@@ -116,14 +127,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 Column(
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    if (hashedValue != null)
+                    if (outputHashedValue != null)
                       const Text(
                         'Hashed value:',
                         style: TextStyle(fontSize: 18),
                       ),
-                    if (hashedValue != null)
+                    if (outputHashedValue != null)
                       const SizedBox(height: 8),
-                    if (hashedValue != null)
+                    if (outputHashedValue != null)
                       SizedBox(
                         width: 200,
                         child: Container(
@@ -133,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            hashedValue!,
+                            outputHashedValue!,
                             style: const TextStyle(
                               fontFamily: 'Courier',
                               fontSize: 14,
