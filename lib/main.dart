@@ -143,13 +143,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: Colors.purple[100],
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
-                            outputHashedValue!,
-                            style: const TextStyle(
-                              fontFamily: 'Courier',
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54
+                          child: Center(
+                            child: Text(
+                              outputHashedValue!,
+                              style: const TextStyle(
+                                fontFamily: 'Courier',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54
+                              ),
                             ),
                           ),
                         ),
