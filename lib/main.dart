@@ -91,12 +91,17 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              controller: _inputController,
-              decoration: const InputDecoration(
-                labelText: 'Enter text to hash',
+            SizedBox(
+              width: 400,
+              child: TextField(
+                controller: _inputController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter text to hash',
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -105,19 +110,44 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Hash it'),
             ),
             const SizedBox(height: 16),
-            if (hashedValue != null)
-              const Text(
-                'Hashed value:',
-                style: TextStyle(fontSize: 18),
-              ),
-            if (hashedValue != null)
-              const SizedBox(height: 8),
-            if (hashedValue != null)
-              Text(
-                hashedValue!,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-          ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    if (hashedValue != null)
+                      const Text(
+                        'Hashed value:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    if (hashedValue != null)
+                      const SizedBox(height: 8),
+                    if (hashedValue != null)
+                      SizedBox(
+                        width: 200,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.purple[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            hashedValue!,
+                            style: const TextStyle(
+                              fontFamily: 'Courier',
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+            ],
         ),
       ),
     );
