@@ -32,7 +32,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _inputController = TextEditingController();
-  List<String> hashArray = List.filled(10, '');
+  static int arraySize = 10;
+  List<String> hashArray = List.filled(arraySize, '');
   bool isHashButtonEnabled = true;
   String hashingProcess = '';
 
@@ -42,15 +43,19 @@ class _MyHomePageState extends State<MyHomePage> {
     final input = _inputController.text.trim();
     if (input.isNotEmpty) {
       int hash = _calculateASCIIHash(input);
-      int index = hash % 10; // Determine the index using modulo
+      int index = hash % arraySize; // Determine the index using modulo
+      hashingProcess += 'Calculated index ($hash % $arraySize): $index\n';
+
       int newIndex = _findEmptySlot(index); // Find the nearest empty slot
       setState(() {
-        hashArray[newIndex] = input; // Store the hash value at the determined index
-        if (hashArray.every((element) => element != '')) {
+        hashArray[newIndex] = input; // Store the input text at the determined index
+        if (hashArray.every((element) => element.isNotEmpty)) {
           isHashButtonEnabled = false; // Disable hash button if array is full
           _showArrayFullMessage();
         }
       });
+
+      hashingProcess += 'Inserted at index: $newIndex\n';
     }
   }
 
@@ -63,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
       hashedValue += (3 * asciiValue) + 16;
       process += 'Hashing Step: (3 * $asciiValue) + 16 = ${(3 * asciiValue) + 16}\n\n';
     }
-    process += 'Total Hash Value: $hashedValue';
+    process += 'Total Hash Value: $hashedValue\n';
     setState(() {
       hashingProcess = process;
     });
@@ -72,16 +77,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int _findEmptySlot(int startIndex) {
     int index = startIndex;
-    while (hashArray[index] != '') {
-      index = (index + 1) % 10; // Move to the next index
+    int initialIndex = index;
+    while (hashArray[index].isNotEmpty) {
+      index = (index + 1) % arraySize; // Move to the next index
+      if (index == initialIndex) {
+        throw Exception('No empty slot found'); // This case should never happen as we disable the button when full
+      }
     }
+    hashingProcess += 'Nearest empty slot found at index: $index\n';
     return index;
   }
 
   void _clearInput() {
     _inputController.clear();
     setState(() {
-      hashArray = List.filled(10, ''); // Reset the hash array
+      hashArray = List.filled(arraySize, ''); // Reset the hash array
       isHashButtonEnabled = true; // Enable hash button
       hashingProcess = ''; // Clear the hashing process
     });
@@ -97,17 +107,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double boxWidth = MediaQuery.of(context).size.width / 11;
+    double boxWidth = MediaQuery.of(context).size.width / (arraySize+1);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title,
-            style: const TextStyle(fontWeight: FontWeight.w700)),
+            style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          // Calculate remaining height for the hashing process container
+          // Method to calculate remaining height for the hashing process container
           double inputHeight = 60; // Approximate height of input field
           double buttonHeight = 50; // Approximate height of buttons
           double paddingHeight = 16 + 16 + 20; // Total padding and margins
@@ -195,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
             10,
                 (index) => Container(
               width: boxWidth,
-              height: boxWidth * 1.1,
+              height: boxWidth,
               decoration: BoxDecoration(
                 color: Colors.purple[100],
                 border: Border.all(color: Colors.black26),
