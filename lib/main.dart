@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _inputController = TextEditingController();
-  List<int> hashArray = List.filled(10, 0);
+  List<String> hashArray = List.filled(10, '');
   bool isHashButtonEnabled = true;
   String hashingProcess = '';
 
@@ -45,8 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
       int index = hash % 10; // Determine the index using modulo
       int newIndex = _findEmptySlot(index); // Find the nearest empty slot
       setState(() {
-        hashArray[newIndex] = hash; // Store the hash value at the determined index
-        if (hashArray.every((element) => element != 0)) {
+        hashArray[newIndex] = input; // Store the hash value at the determined index
+        if (hashArray.every((element) => element != '')) {
           isHashButtonEnabled = false; // Disable hash button if array is full
           _showArrayFullMessage();
         }
@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int _findEmptySlot(int startIndex) {
     int index = startIndex;
-    while (hashArray[index] != 0) {
+    while (hashArray[index] != '') {
       index = (index + 1) % 10; // Move to the next index
     }
     return index;
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _clearInput() {
     _inputController.clear();
     setState(() {
-      hashArray = List.filled(10, 0); // Reset the hash array
+      hashArray = List.filled(10, ''); // Reset the hash array
       isHashButtonEnabled = true; // Enable hash button
       hashingProcess = ''; // Clear the hashing process
     });
@@ -193,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             10,
-            (index) => Container(
+                (index) => Container(
               width: boxWidth,
               height: boxWidth * 1.1,
               decoration: BoxDecoration(
