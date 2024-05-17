@@ -32,77 +32,56 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _inputController = TextEditingController();
-  static int arraySize = 10;
-  List<String> hashArray = List.filled(arraySize, '');
-  bool isHashButtonEnabled = true;
-  String hashingProcess = '';
-
   final ScrollController scrollController = ScrollController();
+
+  List<String> hashArray = List.filled(arraySize, '');
+  static int arraySize = 10;
+  bool isHashButtonEnabled = true;
+  String hashingProcess = ''; // Global holder for presenting process
 
   void _calculateHash() {
     final input = _inputController.text.trim();
     if (input.isNotEmpty) {
-      int hash = _calculateASCIIHash(input);
-      int index = hash % arraySize; // Determine the index using modulo
-      hashingProcess += 'Calculated index ($hash % $arraySize): $index\n';
+      int hashedValue = _calculateASCIIHash(input); // Call Hashing main method
+      int index = hashedValue % arraySize; // Determine the index using modulo
+      hashingProcess += 'Calculated index ($hashedValue % $arraySize): $index\n'; // hashingProcess
 
       int newIndex = _findEmptySlot(index); // Find the nearest empty slot
       setState(() {
-        hashArray[newIndex] = input; // Store the input text at the determined index
+        hashArray[newIndex] = input; // Insertion, store the input text at the determined index
         if (hashArray.every((element) => element.isNotEmpty)) {
-          isHashButtonEnabled = false; // Disable hash button if array is full
-          _showArrayFullMessage();
+          isHashButtonEnabled = false; // Disable 'Hash it' button if array is full
+          _showArrayFullMessage(); // Display warning message
         }
       });
 
-      hashingProcess += 'Inserted at index: $newIndex\n';
+      hashingProcess += 'Inserted at index: $newIndex\n'; // hashingProcess
     }
   }
 
   int _calculateASCIIHash(String input) {
     int hashedValue = 0;
-    String process = '';
-    for (int i = 0; i < input.length; i++) {
-      int asciiValue = input.codeUnitAt(i);
-      process += '${input[i]}: $asciiValue\n';
-      hashedValue += (3 * asciiValue) + 16;
-      process += 'Hashing Step: (3 * $asciiValue) + 16 = ${(3 * asciiValue) + 16}\n\n';
+    String process = '';// internal holder for hashingProcess
+    for (int i = 0; i < input.length; i++) { // for loop to process each character at a time
+      int asciiValue = input.codeUnitAt(i); // Appropriate ascii value representation for character at [i]
+      process += '${input[i]}: $asciiValue\n'; // hashingProcess
+      hashedValue += (3 * asciiValue) + 16; // Function used is 3k +16 where k represent the ascii value
+      process += 'Hashing Step: (3 * $asciiValue) + 16 = ${(3 * asciiValue) + 16}\n\n'; // hashingProcess
     }
-    process += 'Total Hash Value: $hashedValue\n';
+    process += 'Total Hash Value: $hashedValue\n'; // hashingProcess
     setState(() {
-      hashingProcess = process;
+      hashingProcess = process; // hashingProcess
     });
     return hashedValue;
   }
 
   int _findEmptySlot(int startIndex) {
-    int index = startIndex;
-    int initialIndex = index;
-    while (hashArray[index].isNotEmpty) {
-      index = (index + 1) % arraySize; // Move to the next index
-      if (index == initialIndex) {
-        throw Exception('No empty slot found'); // This case should never happen as we disable the button when full
-      }
+    while (hashArray[startIndex].isNotEmpty) {
+      // Circular motion, move to the next index when the slot is found used.
+      startIndex = (startIndex + 1) % arraySize;
     }
-    hashingProcess += 'Nearest empty slot found at index: $index\n';
-    return index;
-  }
-
-  void _clearInput() {
-    _inputController.clear();
-    setState(() {
-      hashArray = List.filled(arraySize, ''); // Reset the hash array
-      isHashButtonEnabled = true; // Enable hash button
-      hashingProcess = ''; // Clear the hashing process
-    });
-  }
-
-  void _showArrayFullMessage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Array is full'),
-      ),
-    );
+    hashingProcess += 'Nearest empty slot found at index: $startIndex\n'; // hashingProcess
+    return startIndex;
   }
 
   @override
@@ -214,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               child: Center(
                 child: Text(
-                  '${hashArray[index]}',
+                  hashArray[index],
                   style: const TextStyle(
                     fontFamily: 'Courier',
                     fontSize: 14,
@@ -226,6 +205,22 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+  void _clearInput() {
+    _inputController.clear();
+    setState(() {
+      hashArray = List.filled(arraySize, ''); // Reset the hash array
+      isHashButtonEnabled = true; // Enable hash button
+      hashingProcess = ''; // Clear the hashing process
+    });
+  }
+
+  void _showArrayFullMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Array is full'),
       ),
     );
   }
