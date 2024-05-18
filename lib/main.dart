@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'DSA Hashing Project',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple[100]!),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: "DSA Hashing Project"),
