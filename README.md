@@ -1,6 +1,6 @@
 # dsa_hash
 
-Data Structure & Algorithms Project.
+A new Flutter project.
 
 ## Getting Started
 
