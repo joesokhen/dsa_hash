@@ -57,6 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       hashingProcess += 'Inserted at index: $newIndex\n'; // hashingProcess
     }
+    _inputController.clear();
+    FocusScope.of(context).unfocus();
   }
 
   int _calculateASCIIHash(String input) {
@@ -88,117 +90,120 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     double boxWidth = MediaQuery.of(context).size.width / (arraySize+1);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(
+            widget.title,
             style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
         ),
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          // Method to calculate remaining height for the hashing process container
-          double inputHeight = 60; // Approximate height of input field
-          double buttonHeight = 50; // Approximate height of buttons
-          double paddingHeight = 16 + 16 + 20; // Total padding and margins
-          double availableHeight = constraints.maxHeight -
-              inputHeight -
-              buttonHeight -
-              paddingHeight;
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            double inputHeight = 60;
+            double buttonHeight = 50;
+            double paddingHeight = 16 + 16 + 20;
+            double availableHeight = constraints.maxHeight -
+                inputHeight -
+                buttonHeight -
+                paddingHeight;
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (hashingProcess.isNotEmpty)
-                  SizedBox(
-                    height: availableHeight,
-                    width: double.infinity,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.purple[50],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Scrollbar(
-                        thumbVisibility: true,
-                        controller: scrollController,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (hashingProcess.isNotEmpty)
+                    SizedBox(
+                      height: availableHeight,
+                      width: double.infinity,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.purple[50],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Scrollbar(
+                          thumbVisibility: true,
                           controller: scrollController,
-                          child: Text(
-                            hashingProcess,
-                            style: const TextStyle(
-                              fontFamily: 'Courier',
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            controller: scrollController,
+                            child: Text(
+                              hashingProcess,
+                              style: const TextStyle(
+                                fontFamily: 'Courier',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                const SizedBox(height: 10),
-                Center(
-                  child: SizedBox(
-                    width: 400,
-                    child: TextField(
-                      controller: _inputController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Enter text to hash',
+                  const SizedBox(height: 10),
+                  Center(
+                    child: SizedBox(
+                      width: 400,
+                      child: TextField(
+                        controller: _inputController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter text to hash',
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: isHashButtonEnabled
-                          ? _calculateHash
-                          : null, // Disable hash button if array is full
-                      child: const Text('Hash it'),
-                    ),
-                    const SizedBox(width: 16),
-                    ElevatedButton(
-                      onPressed: _clearInput,
-                      child: const Text('Clear'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.purple[100],
-        padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            10,
-                (index) => Container(
-              width: boxWidth,
-              height: boxWidth,
-              decoration: BoxDecoration(
-                color: Colors.purple[100],
-                border: Border.all(color: Colors.black26),
-                borderRadius: BorderRadius.circular(3),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: isHashButtonEnabled ? _calculateHash : null,
+                        child: const Text('Hash it'),
+                      ),
+                      const SizedBox(width: 16),
+                      ElevatedButton(
+                        onPressed: _clearInput,
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              child: Center(
-                child: Text(
-                  hashArray[index],
-                  style: const TextStyle(
-                    fontFamily: 'Courier',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+            );
+          },
+        ),
+        bottomNavigationBar: Container(
+          color: Colors.purple[100],
+          padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              10,
+                  (index) => Container(
+                width: boxWidth,
+                height: boxWidth,
+                decoration: BoxDecoration(
+                  color: Colors.purple[100],
+                  border: Border.all(color: Colors.black26),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Center(
+                  child: Text(
+                    hashArray[index],
+                    style: const TextStyle(
+                      fontFamily: 'Courier',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
                   ),
                 ),
               ),
